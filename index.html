@@ -1,125 +1,119 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prosta strona</title>
+
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--text:#1d2330;--muted:#5b6475;--accent:#2f6fed;--accent-text:#fff;--border:#d6dae3;--ok-bg:#e3f6e8;--ok-text:#14602b;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171d;--card:#1e222b;--text:#e7e9ee;--muted:#9aa3b5;--accent:#5b92ff;--accent-text:#0b1020;--border:#343a48;--ok-bg:#183a25;--ok-text:#8fe0a9}}
-:root[data-theme="dark"]{--bg:#14171d;--card:#1e222b;--text:#e7e9ee;--muted:#9aa3b5;--accent:#5b92ff;--accent-text:#0b1020;--border:#343a48;--ok-bg:#183a25;--ok-text:#8fe0a9}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.6}
-main{max-width:900px;margin:0 auto;padding:32px 20px}
-h1{margin-top:0}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
-.btn{display:inline-block;background:var(--accent);color:var(--accent-text);border:0;border-radius:8px;padding:12px 22px;font-size:1rem;cursor:pointer;font-family:inherit}
-.btn.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-.actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}
-.view{display:none}.view.active{display:block}
-.cols{column-count:3;column-gap:28px;text-align:justify;margin:20px 0}
-@media (max-width:700px){.cols{column-count:1}}
-label{display:block;font-weight:600;margin-top:14px}
-input[type=text],textarea{width:100%;padding:10px;margin-top:4px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit}
-.check{display:flex;align-items:center;gap:10px;margin-top:16px;font-weight:600}
-.check input{width:20px;height:20px}
-.msg{display:none;margin-top:16px;padding:12px 16px;border-radius:8px;background:var(--ok-bg);color:var(--ok-text)}
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6f8;
+  margin: 20px;
+}
+.card {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+}
+button {
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+input, textarea {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 15px;
+  box-sizing: border-box;
+}
+.view { display: none; }
+.active { display: block; }
 </style>
 </head>
+
 <body>
-<main>
+
+<div class="card">
 
 <section id="home" class="view active">
-  <div class="card">
-    <h1>Witaj!</h1>
-    <p>Wybierz, dokąd chcesz przejść.</p>
-    <div class="actions">
-      <button class="btn" data-go="tekst">Losowy tekst</button>
-      <button class="btn" data-go="formularz">Formularz</button>
-    </div>
-  </div>
+  <h1>Witaj!</h1>
+  <p>Wybierz opcję:</p>
+  <button onclick="show('tekst')">Losowy tekst</button>
+  <button onclick="show('formularz')">Formularz</button>
 </section>
 
 <section id="tekst" class="view">
-  <div class="card">
-    <h1>Losowy tekst</h1>
-    <div class="cols" id="cols"></div>
-    <div class="actions">
-      <button class="btn sec" data-go="home">← Wróć</button>
-      <button class="btn" id="again">Losuj ponownie</button>
-    </div>
-  </div>
+  <h1>Losowy tekst</h1>
+  <div id="tekstBox"></div>
+  <button onclick="show('home')">Wróć</button>
+  <button onclick="generate()">Losuj ponownie</button>
 </section>
 
 <section id="formularz" class="view">
-  <div class="card">
-    <h1>Formularz</h1>
-    <form id="form">
-      <label for="imie">Imię</label>
-      <input type="text" id="imie" required>
-      <label for="nazwisko">Nazwisko</label>
-      <input type="text" id="nazwisko" required>
-      <label for="adres">Adres</label>
-      <input type="text" id="adres" required>
-      <label for="kontakt">Kontakt (telefon lub e-mail)</label>
-      <input type="text" id="kontakt" required>
-      <label class="check"><input type="checkbox" id="pj"> Mam prawo jazdy</label>
-      <label for="uwagi">Uwagi</label>
-      <textarea id="uwagi" rows="4"></textarea>
-      <div class="actions">
-        <button type="button" class="btn sec" data-go="home">← Wróć</button>
-        <button type="submit" class="btn">Wyślij</button>
-      </div>
-    </form>
-    <div class="msg" id="msg" role="status">Formularz został wysłany.</div>
-  </div>
+  <h1>Formularz</h1>
+
+  <form onsubmit="send(event)">
+    <label>Imię</label>
+    <input required>
+
+    <label>Nazwisko</label>
+    <input required>
+
+    <label>Adres</label>
+    <input required>
+
+    <label>Kontakt</label>
+    <input required>
+
+    <label>
+      <input type="checkbox" style="display:inline;width:auto">
+      Mam prawo jazdy
+    </label>
+
+    <label>Uwagi</label>
+    <textarea rows="4"></textarea>
+
+    <button type="button" onclick="show('home')">Wróć</button>
+    <button type="submit">Wyślij</button>
+  </form>
+
+  <p id="msg"></p>
 </section>
 
-</main>
+</div>
+
 <script>
-var words="lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum".split(" ");
-function rnd(n){return Math.floor(Math.random()*n)}
-function sentence(){
-  var len=6+rnd(10),out=[];
-  for(var i=0;i<len;i++)out.push(words[rnd(words.length)]);
-  var s=out.join(" ");
-  return s.charAt(0).toUpperCase()+s.slice(1)+".";
+function show(id) {
+  document.querySelectorAll('.view').forEach(v =>
+    v.classList.remove('active')
+  );
+  document.getElementById(id).classList.add('active');
+
+  if (id === 'tekst') generate();
 }
-function paragraph(){
-  var n=3+rnd(4),out=[];
-  for(var i=0;i<n;i++)out.push(sentence());
-  return out.join(" ");
+
+function generate() {
+  let tekst = '';
+  for (let i = 0; i < 5; i++) {
+    tekst += '<p>' +
+      Array.from({length: 10}, () =>
+        ['lorem', 'ipsum', 'dolor', 'amet', 'sit'][Math.floor(Math.random()*5)]
+      ).join(' ') + '.</p>';
+  }
+  document.getElementById('tekstBox').innerHTML = tekst;
 }
-function generate(){
-  var box=document.getElementById("cols"),html="";
-  for(var i=0;i<6;i++)html+="<p>"+paragraph()+"</p>";
-  box.innerHTML=html;
-}
-function show(id){
-  var views=document.querySelectorAll(".view");
-  for(var i=0;i<views.length;i++)views[i].classList.toggle("active",views[i].id===id);
-  if(id==="tekst")generate();
-  if(id!=="formularz")document.getElementById("msg").style.display="none";
-  window.scrollTo(0,0);
-}
-function route(){
-  var id=location.hash.replace("#","")||"home";
-  if(!document.getElementById(id))id="home";
-  show(id);
-}
-document.addEventListener("click",function(e){
-  var t=e.target.closest("[data-go]");
-  if(t){location.hash=t.getAttribute("data-go")==="home"?"":t.getAttribute("data-go");if(!location.hash)route();}
-});
-window.addEventListener("hashchange",route);
-document.getElementById("again").addEventListener("click",generate);
-document.getElementById("form").addEventListener("submit",function(e){
+
+function send(e) {
   e.preventDefault();
-  this.reset();
-  document.getElementById("msg").style.display="block";
-});
-route();
+  e.target.reset();
+  document.getElementById('msg').textContent = 'Formularz został wysłany.';
+}
 </script>
+
 </body>
 </html>
