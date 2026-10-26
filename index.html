@@ -31,6 +31,36 @@ input, textarea {
   margin: 5px 0 15px;
   box-sizing: border-box;
 }
+.kolumny {
+  column-count: 1;
+  column-gap: 20px;
+}
+.uklad {
+  column-gap: 15px;
+  margin-bottom: 25px;
+}
+.zdjecia {
+  display: flex;
+  gap: 10px;
+}
+
+.zdjecia img {
+  width: 100%;
+  height: auto;
+}
+
+.zdjecia figure {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 500px) {
+  .zdjecia {
+    flex-direction: column;
+  }
+}
 .view { display: none; }
 .active { display: block; }
 </style>
@@ -45,13 +75,20 @@ input, textarea {
   <p>Wybierz opcję:</p>
   <button onclick="show('tekst')">Losowy tekst</button>
   <button onclick="show('formularz')">Formularz</button>
+  <button onclick="show('tekst2')">Inny tekst</button>
+  <button onclick="show('zdjecia')">Zdjecia</button>
 </section>
 
 <section id="tekst" class="view">
   <h1>Losowy tekst</h1>
   <div id="tekstBox"></div>
   <button onclick="show('home')">Wróć</button>
-  <button onclick="generate()">Losuj ponownie</button>
+</section>
+
+<section id="tekst2" class="view">
+  <h1>Inny tekst</h1>
+  <div id="tekstBox2" class="kolumny"></div>
+  <button onclick="show('home')">Wróć</button>
 </section>
 
 <section id="formularz" class="view">
@@ -85,28 +122,82 @@ input, textarea {
   <p id="msg"></p>
 </section>
 
+<section id="zdjecia" class="view">
+  <h1>Zdjęcia</h1>
+
+  <div class="zdjecia">
+    <figure>
+      <img src="https://images.dog.ceo/breeds/dalmatian/cooper2.jpg" alt="Zdjęcie 1">
+      <figcaption>Zdjęcie 1</figcaption>
+    </figure>
+
+    <figure>
+      <img src="https://images.dog.ceo/breeds/collie/n02106030_16359.jpg" alt="Zdjęcie 2">
+      <figcaption>Zdjęcie 2</figcaption>
+    </figure>
+
+    <figure>
+      <img src="https://images.dog.ceo/breeds/bakharwal-indian/bakharwal.jpg" alt="Zdjęcie 3">
+      <figcaption>Zdjęcie 3</figcaption>
+    </figure>
+  </div>
+
+  <button onclick="show('home')">Wróć</button>
+</section>
+
 </div>
 
 <script>
+
+let wygenerowane = [];
+
 function show(id) {
   document.querySelectorAll('.view').forEach(v =>
     v.classList.remove('active')
   );
   document.getElementById(id).classList.add('active');
 
-  if (id === 'tekst') generate();
+  if (id === 'tekst' && !wygenerowane.includes(id)) {
+    generate();
+    wygenerowane.push(id);
+  }
+
+  if (id === 'tekst2' && !wygenerowane.includes(id)) {
+    generate('tekstBox2');
+    wygenerowane.push(id);
+  }
 }
 
-function generate() {
-  let tekst = '';
-  for (let i = 0; i < 5; i++) {
-    tekst += '<p>' +
-      Array.from({length: 10}, () =>
-        ['lorem', 'ipsum', 'dolor', 'amet', 'sit'][Math.floor(Math.random()*5)]
-      ).join(' ') + '.</p>';
-  }
-  document.getElementById('tekstBox').innerHTML = tekst;
+
+
+function generate(id = 'tekstBox') {
+  let box = document.getElementById(id);
+  box.innerHTML = '';
+
+  let kolumny = id === 'tekstBox'
+    ? [1, 2, 3, 4]
+    : [2, 1, 4, 2];
+
+  kolumny.forEach(kol => {
+    let tekst = '';
+
+    for (let i = 0; i < 4; i++) {
+      tekst += '<p>' +
+        Array.from({length: 10}, () =>
+          ['lorem', 'ipsum', 'dolor', 'amet', 'sit'][
+            Math.floor(Math.random() * 5)
+          ]
+        ).join(' ') + '.</p>';
+    }
+
+    box.innerHTML +=
+      '<div style="column-count:' + kol +
+      '; column-gap:15px; margin-bottom:25px">' +
+      tekst + '</div>';
+  });
 }
+
+
 
 function send(e) {
   e.preventDefault();
